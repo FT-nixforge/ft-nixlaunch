@@ -1,8 +1,8 @@
-# 🔮 Prism
+# 🔮 nixprism
 
 A modern, polished Rofi application launcher for NixOS and Wayland.
 
-Inspired by macOS Spotlight, KDE KRunner, and Ulauncher — Prism transforms Rofi
+Inspired by macOS Spotlight, KDE KRunner, and Ulauncher — nixprism transforms Rofi
 into a beautiful, centered launcher with blurred transparency, rounded corners,
 and clean typography.
 
@@ -24,17 +24,17 @@ and clean typography.
 
 ### As a flake input
 
-Add Prism to your `flake.nix`:
+Add nixprism to your `flake.nix`:
 
 ```nix
 {
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     home-manager.url = "github:nix-community/home-manager";
-    prism.url = "github:youruser/prism"; # or "path:./prism"
+    nixprism.url = "github:youruser/nixprism"; # or "path:./nixprism"
   };
 
-  outputs = { nixpkgs, home-manager, prism, ... }: {
+  outputs = { nixpkgs, home-manager, nixprism, ... }: {
     # …your config
   };
 }
@@ -47,9 +47,9 @@ In your Home Manager configuration:
 ```nix
 { inputs, ... }:
 {
-  imports = [ inputs.prism.homeManagerModules.default ];
+  imports = [ inputs.nixprism.homeManagerModules.default ];
 
-  programs.prism = {
+  programs.nixprism = {
     enable = true;
 
     # Optional: auto-bind SUPER+Space in Hyprland
@@ -66,24 +66,24 @@ In your Home Manager configuration:
 ```nix
 { inputs, pkgs, ... }:
 {
-  home.packages = [ inputs.prism.packages.${pkgs.system}.default ];
+  home.packages = [ inputs.nixprism.packages.${pkgs.system}.default ];
 }
 ```
 
 Then add a keybinding manually in your Hyprland config:
 
 ```conf
-bind = SUPER, space, exec, prism
+bind = SUPER, space, exec, nixprism
 ```
 
 ## ⚙️ Configuration
 
-All options live under `programs.prism`.
+All options live under `programs.nixprism`.
 
 ### Colours
 
 ```nix
-programs.prism = {
+programs.nixprism = {
   colors = {
     background    = "#1e1e2e";  # Primary background
     backgroundAlt = "#313244";  # Input bar / selection
@@ -99,7 +99,7 @@ programs.prism = {
 ### Typography & Layout
 
 ```nix
-programs.prism = {
+programs.nixprism = {
   font = {
     name = "Inter";
     size = 13;
@@ -118,7 +118,7 @@ programs.prism = {
 ### Web Search
 
 ```nix
-programs.prism = {
+programs.nixprism = {
   searchEngine = "https://duckduckgo.com/?q=";
   browser      = "firefox"; # null → xdg-open
 };
@@ -127,7 +127,7 @@ programs.prism = {
 ### Keybinding
 
 ```nix
-programs.prism = {
+programs.nixprism = {
   hyprlandIntegration = true;   # Adds bind + blur layer rules
   keybind             = "SUPER, space"; # Hyprland format
 };
@@ -138,7 +138,7 @@ programs.prism = {
 If you use [Stylix](https://github.com/danth/stylix) for system-wide theming:
 
 ```nix
-programs.prism.stylixIntegration = true;
+programs.nixprism.stylixIntegration = true;
 # Colours are auto-derived from the active base16 scheme.
 ```
 
@@ -147,7 +147,7 @@ programs.prism.stylixIntegration = true;
 Append raw rasi rules for advanced overrides:
 
 ```nix
-programs.prism.extraConfig = ''
+programs.nixprism.extraConfig = ''
   window {
     width: 800px;
   }
@@ -159,11 +159,11 @@ programs.prism.extraConfig = ''
 ### Launch from the command line
 
 ```bash
-prism           # App launcher (default)
-prism run       # Command runner
-prism files     # File search
-prism web       # Web search
-prism --help    # Show help
+nixprism           # App launcher (default)
+nixprism run       # Command runner
+nixprism files     # File search
+nixprism web       # Web search
+nixprism --help    # Show help
 ```
 
 ### Keyboard shortcuts inside the launcher
@@ -216,22 +216,22 @@ layer_effects "rofi" blur enable
 
 ### Other Wayland Compositors
 
-Prism uses `transparency: "real"` in the theme. Enable blur for
+nixprism uses `transparency: "real"` in the theme. Enable blur for
 Rofi / layer-shell surfaces in your compositor's settings.
 
 ## 📂 Project Structure
 
 ```
-prism/
+nixprism/
 ├── flake.nix              Nix flake entry point
 ├── package.nix            Package derivation
 ├── module.nix             Home Manager module with options
 ├── scripts/
-│   ├── prism-launcher.sh  Main launcher wrapper
+│   ├── nixprism-launcher.sh  Main launcher wrapper
 │   ├── file-search.sh     File search mode (rofi script)
 │   └── web-search.sh      Web search mode (rofi script)
 ├── themes/
-│   └── prism.rasi         Default theme (Catppuccin Mocha)
+│   └── nixprism.rasi         Default theme (Catppuccin Mocha)
 └── README.md
 ```
 

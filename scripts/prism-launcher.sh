@@ -1,31 +1,31 @@
 #!/usr/bin/env bash
-# Prism — Modern Rofi Application Launcher
+# nixprism — Modern Rofi Application Launcher
 set -euo pipefail
 
-PRISM_DIR="@out@/share/prism"
-PRISM_THEME="${PRISM_THEME:-$PRISM_DIR/themes/prism.rasi}"
-PRISM_CONFIG="${PRISM_CONFIG:-}"
+nixprism_DIR="@out@/share/nixprism"
+nixprism_THEME="${nixprism_THEME:-$nixprism_DIR/themes/nixprism.rasi}"
+nixprism_CONFIG="${nixprism_CONFIG:-}"
 
 # Load user config if available
-if [[ -n "$PRISM_CONFIG" && -f "$PRISM_CONFIG" ]]; then
+if [[ -n "$nixprism_CONFIG" && -f "$nixprism_CONFIG" ]]; then
     # shellcheck disable=SC1090
-    source "$PRISM_CONFIG"
+    source "$nixprism_CONFIG"
 fi
 
-SEARCH_ENGINE="${PRISM_SEARCH_ENGINE:-https://www.google.com/search?q=}"
-BROWSER="${PRISM_BROWSER:-}"
+SEARCH_ENGINE="${nixprism_SEARCH_ENGINE:-https://www.google.com/search?q=}"
+BROWSER="${nixprism_BROWSER:-}"
 
-FILE_SEARCH="$PRISM_DIR/scripts/file-search.sh"
-WEB_SEARCH="$PRISM_DIR/scripts/web-search.sh"
+FILE_SEARCH="$nixprism_DIR/scripts/file-search.sh"
+WEB_SEARCH="$nixprism_DIR/scripts/web-search.sh"
 
 # Export for sub-scripts
-export PRISM_SEARCH_ENGINE="$SEARCH_ENGINE"
-export PRISM_BROWSER="$BROWSER"
+export nixprism_SEARCH_ENGINE="$SEARCH_ENGINE"
+export nixprism_BROWSER="$BROWSER"
 
 MODE="${1:-drun}"
 
 common_args=(
-    -theme "$PRISM_THEME"
+    -theme "$nixprism_THEME"
     -show-icons
     -icon-theme "Adwaita"
     -drun-display-format "{name}"
@@ -69,9 +69,9 @@ case "$MODE" in
     files|file)  MODE="files" ;;
     web|search)  MODE="web" ;;
     help|--help|-h)
-        echo "Prism — Modern Application Launcher"
+        echo "nixprism — Modern Application Launcher"
         echo ""
-        echo "Usage: prism [MODE]"
+        echo "Usage: nixprism [MODE]"
         echo ""
         echo "Modes:"
         echo "  drun, apps    Application launcher (default)"
@@ -91,7 +91,7 @@ case "$MODE" in
         ;;
     *)
         echo "Unknown mode: $MODE" >&2
-        echo "Run 'prism --help' for usage." >&2
+        echo "Run 'nixprism --help' for usage." >&2
         exit 1
         ;;
 esac

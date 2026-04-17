@@ -15,7 +15,7 @@ let
     types
     ;
 
-  cfg = config.programs.prism;
+  cfg = config.programs.nixprism;
 
   # Check if Stylix is available and enabled
   stylixAvailable =
@@ -52,7 +52,7 @@ let
 
   # Generate the theme from module options
   generatedTheme = ''
-    /* Prism — generated theme (do not edit; configure via Nix module) */
+    /* nixprism — generated theme (do not edit; configure via Nix module) */
 
     * {
         bg:          ${resolvedColors.background}${alphaHex};
@@ -212,12 +212,12 @@ let
     }
   '';
 
-  prismPackage = self.packages.${pkgs.system}.default;
+  nixprismPackage = self.packages.${pkgs.system}.default;
 
 in
 {
-  options.programs.prism = {
-    enable = mkEnableOption "Prism, a modern Rofi application launcher";
+  options.programs.nixprism = {
+    enable = mkEnableOption "nixprism, a modern Rofi application launcher";
 
     stylixIntegration = mkOption {
       type = types.bool;
@@ -344,7 +344,7 @@ in
     keybind = mkOption {
       type = types.str;
       default = "SUPER, space";
-      description = "Hyprland keybinding for launching Prism (modifier, key format).";
+      description = "Hyprland keybinding for launching nixprism (modifier, key format).";
     };
 
     extraConfig = mkOption {
@@ -357,29 +357,29 @@ in
   config = mkIf cfg.enable (mkMerge [
     # ── Base configuration ────────────────────────────────────────────
     {
-      home.packages = [ prismPackage ];
+      home.packages = [ nixprismPackage ];
 
       # Generated theme
-      xdg.configFile."prism/theme.rasi".text = generatedTheme + cfg.extraConfig;
+      xdg.configFile."nixprism/theme.rasi".text = generatedTheme + cfg.extraConfig;
 
       # Runtime config consumed by the launcher script
-      xdg.configFile."prism/config".text = ''
-        PRISM_SEARCH_ENGINE="${cfg.searchEngine}"
-        PRISM_BROWSER="${if cfg.browser != null then cfg.browser else ""}"
-        PRISM_TERMINAL="${if cfg.terminal != null then cfg.terminal else ""}"
+      xdg.configFile."nixprism/config".text = ''
+        nixprism_SEARCH_ENGINE="${cfg.searchEngine}"
+        nixprism_BROWSER="${if cfg.browser != null then cfg.browser else ""}"
+        nixprism_TERMINAL="${if cfg.terminal != null then cfg.terminal else ""}"
       '';
 
       # Point the launcher at the generated theme + config
       home.sessionVariables = {
-        PRISM_THEME = "${config.xdg.configHome}/prism/theme.rasi";
-        PRISM_CONFIG = "${config.xdg.configHome}/prism/config";
+        nixprism_THEME = "${config.xdg.configHome}/nixprism/theme.rasi";
+        nixprism_CONFIG = "${config.xdg.configHome}/nixprism/config";
       };
     }
 
     # ── Hyprland integration ──────────────────────────────────────────
     (mkIf cfg.hyprlandIntegration {
       wayland.windowManager.hyprland.settings = {
-        bind = [ "${cfg.keybind}, exec, prism" ];
+        bind = [ "${cfg.keybind}, exec, nixprism" ];
         layerrule = [
           "blur, rofi"
           "ignorezero, rofi"

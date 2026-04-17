@@ -1,5 +1,5 @@
 {
-  description = "Prism — a modern, polished Rofi application launcher for Wayland";
+  description = "nixprism — a modern, polished Rofi application launcher for Wayland";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -16,14 +16,14 @@
     in
     {
       packages = forAllSystems (system: rec {
-        prism = nixpkgs.legacyPackages.${system}.callPackage ./package.nix { };
-        default = prism;
+        nixprism = nixpkgs.legacyPackages.${system}.callPackage ./package.nix { };
+        default = nixprism;
       });
 
       homeManagerModules.default = import ./module.nix self;
 
       overlays.default = final: _prev: {
-        prism = self.packages.${final.system}.default;
+        nixprism = self.packages.${final.system}.default;
       };
     };
 }
