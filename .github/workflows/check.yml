@@ -31,20 +31,16 @@ jobs:
       - name: Check flake
         run: nix flake check --show-trace
 
-      - name: Verify lib exports
-        run: nix eval .#lib --apply builtins.attrNames
+      - name: Verify package builds
+        run: nix build .#default --dry-run --show-trace
 
-      - name: Verify nixosModules export
+      - name: Verify homeManagerModules export
         run: |
-          nix eval .#nixosModules.default --apply 'x: "ok"'
+          nix eval .#homeManagerModules.default --apply 'x: "ok"'
 
-      - name: Verify homeModules export
+      - name: Verify overlay export
         run: |
-          nix eval .#homeModules.default --apply 'x: "ok"'
-
-      - name: Verify built-in themes load
-        run: |
-          nix eval .#lib --apply 'lib: builtins.attrNames (lib.loadAllThemes { builtinRoot = builtins.toString ./themes; userRoot = null; })'
+          nix eval .#overlays.default --apply 'x: "ok"'
 
       - name: Summary
         if: always()
