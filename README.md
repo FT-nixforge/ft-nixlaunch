@@ -1,240 +1,36 @@
-# 🔮 nixprism
+# nixprism
 
 A modern, polished Rofi application launcher for NixOS and Wayland.
+Inspired by macOS Spotlight and KDE KRunner — centered, blurred, and fully configurable via Nix options.
 
-Inspired by macOS Spotlight, KDE KRunner, and Ulauncher — nixprism transforms Rofi
-into a beautiful, centered launcher with blurred transparency, rounded corners,
-and clean typography.
+## Highlights
 
-## ✨ Features
+- Centered launcher with blurred transparency and rounded corners
+- Multiple modes: **Apps**, **Run**, **Files** (fd), **Web** — switch with `Tab`
+- Hyprland integration — auto-adds keybinding and blur layer rules
+- Stylix integration — colors auto-derived from the active Base16 scheme
+- Fully configurable: colors, fonts, sizes, keybindings via Home Manager options
 
-- **Centered launcher** — floats in the middle of your screen
-- **Blurred transparency** — works with Hyprland and other Wayland compositors
-- **Rounded corners** — 20 px radius by default, fully configurable
-- **Large app icons** — clean list with icons and names, no terminal-style clutter
-- **Multiple modes** — press `Tab` to switch:
-  - 🚀 **Apps** (drun) — launch applications
-  - ⌨️  **Run** — execute shell commands
-  - 📁 **Files** — search and open files
-  - 🌐 **Web** — search the web
-- **Stylix integration** — respects your system colour scheme
-- **Fully configurable** — colours, fonts, sizes, keybindings, all via Nix options
-
-## 📦 Installation
-
-### As a flake input
-
-Add nixprism to your `flake.nix`:
+## Quick Install
 
 ```nix
-{
-  inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    home-manager.url = "github:nix-community/home-manager";
-    nixprism.url = "github:youruser/nixprism"; # or "path:./nixprism"
-  };
-
-  outputs = { nixpkgs, home-manager, nixprism, ... }: {
-    # …your config
-  };
-}
+inputs.nixprism.url = "github:FT-nixforge/nixprism";
 ```
-
-### Home Manager module
-
-In your Home Manager configuration:
 
 ```nix
-{ inputs, ... }:
-{
-  imports = [ inputs.nixprism.homeManagerModules.default ];
-
-  programs.nixprism = {
-    enable = true;
-
-    # Optional: auto-bind SUPER+Space in Hyprland
-    hyprlandIntegration = true;
-
-    # Optional: pull colours from Stylix
-    stylixIntegration = true;
-  };
-}
-```
-
-### Standalone package (no module)
-
-```nix
-{ inputs, pkgs, ... }:
-{
-  home.packages = [ inputs.nixprism.packages.${pkgs.system}.default ];
-}
-```
-
-Then add a keybinding manually in your Hyprland config:
-
-```conf
-bind = SUPER, space, exec, nixprism
-```
-
-## ⚙️ Configuration
-
-All options live under `programs.nixprism`.
-
-### Colours
-
-```nix
+imports = [ inputs.nixprism.homeManagerModules.default ];
 programs.nixprism = {
-  colors = {
-    background    = "#1e1e2e";  # Primary background
-    backgroundAlt = "#313244";  # Input bar / selection
-    foreground    = "#cdd6f4";  # Primary text
-    foregroundAlt = "#a6adc8";  # Placeholders / muted text
-    accent        = "#89b4fa";  # Highlights and prompts
-    urgent        = "#f38ba8";  # Urgent items
-  };
-  opacity = "dd"; # Hex alpha (00–ff)
+  enable              = true;
+  hyprlandIntegration = true;
+  stylixIntegration   = true;
 };
 ```
 
-### Typography & Layout
+## Documentation
 
-```nix
-programs.nixprism = {
-  font = {
-    name = "Inter";
-    size = 13;
-  };
-  window = {
-    width        = 680;
-    borderRadius = 20;
-  };
-  iconSize   = 36;
-  maxResults = 7;
-  padding    = 24;
-  spacing    = 12;
-};
-```
+Full documentation, options reference, and examples:  
+**[ft-nixforge.github.io/community/ft-nixprism](https://ft-nixforge.github.io/community/ft-nixprism)**
 
-### Web Search
-
-```nix
-programs.nixprism = {
-  searchEngine = "https://duckduckgo.com/?q=";
-  browser      = "firefox"; # null → xdg-open
-};
-```
-
-### Keybinding
-
-```nix
-programs.nixprism = {
-  hyprlandIntegration = true;   # Adds bind + blur layer rules
-  keybind             = "SUPER, space"; # Hyprland format
-};
-```
-
-### Stylix Integration
-
-If you use [Stylix](https://github.com/danth/stylix) for system-wide theming:
-
-```nix
-programs.nixprism.stylixIntegration = true;
-# Colours are auto-derived from the active base16 scheme.
-```
-
-### Extra Theme Customisation
-
-Append raw rasi rules for advanced overrides:
-
-```nix
-programs.nixprism.extraConfig = ''
-  window {
-    width: 800px;
-  }
-'';
-```
-
-## 🚀 Usage
-
-### Launch from the command line
-
-```bash
-nixprism           # App launcher (default)
-nixprism run       # Command runner
-nixprism files     # File search
-nixprism web       # Web search
-nixprism --help    # Show help
-```
-
-### Keyboard shortcuts inside the launcher
-
-| Key           | Action                   |
-|---------------|--------------------------|
-| `Tab`         | Switch to next mode      |
-| `Shift+Tab`   | Switch to previous mode  |
-| `Alt+A`       | Jump to Apps mode        |
-| `Alt+R`       | Jump to Run mode         |
-| `Alt+F`       | Jump to Files mode       |
-| `Alt+W`       | Jump to Web mode         |
-| `Enter`       | Open / execute selection |
-| `Escape`      | Close the launcher       |
-| Arrow keys    | Navigate results         |
-
-### Modes
-
-1. **Apps** — searches `.desktop` entries; shows icons and names
-2. **Run** — execute any shell command
-3. **Files** — searches files under `$HOME` (powered by `fd`)
-4. **Web** — type a query and press Enter; includes NixOS quick links
-
-## 🖌️ Compositor Setup
-
-### Hyprland
-
-For the blurred background effect add these layer rules to your Hyprland
-config (the module sets these automatically when `hyprlandIntegration = true`):
-
-```conf
-layerrule = blur, rofi
-layerrule = ignorezero, rofi
-```
-
-Optional — dim everything behind the launcher for a spotlight effect:
-
-```conf
-layerrule = dimaround, rofi
-```
-
-### Sway (swayfx)
-
-SwayFX supports blur:
-
-```conf
-blur enable
-layer_effects "rofi" blur enable
-```
-
-### Other Wayland Compositors
-
-nixprism uses `transparency: "real"` in the theme. Enable blur for
-Rofi / layer-shell surfaces in your compositor's settings.
-
-## 📂 Project Structure
-
-```
-nixprism/
-├── flake.nix              Nix flake entry point
-├── package.nix            Package derivation
-├── module.nix             Home Manager module with options
-├── scripts/
-│   ├── nixprism-launcher.sh  Main launcher wrapper
-│   ├── file-search.sh     File search mode (rofi script)
-│   └── web-search.sh      Web search mode (rofi script)
-├── themes/
-│   └── nixprism.rasi         Default theme (Catppuccin Mocha)
-└── README.md
-```
-
-## 📄 Licence
+## License
 
 MIT
