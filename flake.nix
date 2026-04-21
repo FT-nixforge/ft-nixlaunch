@@ -24,7 +24,7 @@
         provides = [ "packages" "homeModules" "overlays" ];
         dependencies = [ "ft-nixpalette" ];
         status = "stable";
-        version = "0.1.0";
+        version = "1.0.0";
       };
 
       packages = forAllSystems (system: rec {
