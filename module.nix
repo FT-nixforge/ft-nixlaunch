@@ -37,12 +37,12 @@ let
   resolvedColors =
     if cfg.ft-nixpaletteIntegration && ft-nixpaletteColors != null then
       {
-        background = nixpaletteColors.base00 or cfg.colors.background;
-        backgroundAlt = nixpaletteColors.base01 or cfg.colors.backgroundAlt;
-        foreground = nixpaletteColors.base05 or cfg.colors.foreground;
-        foregroundAlt = nixpaletteColors.base04 or cfg.colors.foregroundAlt;
-        accent = nixpaletteColors.base0D or cfg.colors.accent;
-        urgent = nixpaletteColors.base08 or cfg.colors.urgent;
+        background = ft-nixpaletteColors.base00 or cfg.colors.background;
+        backgroundAlt = ft-nixpaletteColors.base01 or cfg.colors.backgroundAlt;
+        foreground = ft-nixpaletteColors.base05 or cfg.colors.foreground;
+        foregroundAlt = ft-nixpaletteColors.base04 or cfg.colors.foregroundAlt;
+        accent = ft-nixpaletteColors.base0D or cfg.colors.accent;
+        urgent = ft-nixpaletteColors.base08 or cfg.colors.urgent;
       }
     else if cfg.stylixIntegration && stylixColors != null then
       {
