@@ -15,6 +15,7 @@
 let
   cfg  = config.programs.ft-nixlaunch;
   mCfg = cfg.integrations.mangowc;
+  # cfg.compositor is the single top-level chooser (options/compositor.nix)
 in
 
 {
@@ -49,7 +50,7 @@ in
 
   };
 
-  config = lib.mkIf (cfg.enable && cfg.integrations.de == "MangoWC") {
+  config = lib.mkIf (cfg.enable && cfg.compositor == "MangoWC") {
     # Write a standalone keybind snippet that MangoWC can source.
     # Keeping it in a separate file avoids touching the user's main
     # mangowc.conf and makes it easy to regenerate on theme changes.

@@ -1,5 +1,7 @@
 # ft-nixlaunch — GNOME Desktop integration
 #
+# Active when: programs.ft-nixlaunch.compositor = "GNOME"
+#
 # Registers ft-nixlaunch as a custom GNOME keybinding via dconf.
 # Uses GNOME's custom-keybindings mechanism under:
 #   org.gnome.settings-daemon.plugins.media-keys.custom-keybindings
@@ -66,7 +68,7 @@ in
 
   };
 
-  config = lib.mkIf (cfg.enable && cfg.integrations.de == "GNOME") (lib.mkMerge [
+  config = lib.mkIf (cfg.enable && cfg.compositor == "GNOME") (lib.mkMerge [
 
     # ── Keybinding definition ──────────────────────────────────────────────
     {

@@ -57,7 +57,7 @@ in
   };
 
   # ── Config ──────────────────────────────────────────────────────────────────
-  config = lib.mkIf (cfg.enable && cfg.integrations.de == "KDE") {
+  config = lib.mkIf (cfg.enable && cfg.compositor == "KDE") {
 
     # Ensure kwriteconfig is available during activation.
     home.packages = [ kwriteconfig ];

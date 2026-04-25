@@ -4,7 +4,7 @@
 # bind system (programs.niri.settings.binds).
 #
 # Activate with:
-#   programs.ft-nixlaunch.integrations.de = "Niri";
+#   programs.ft-nixlaunch.compositor = "Niri";
 #
 # The default keybind is "Mod+Space". Override with:
 #   programs.ft-nixlaunch.integrations.niri.keybind = "Mod+D";
@@ -59,7 +59,7 @@ in
   };
 
   # ── Niri config ─────────────────────────────────────────────────────────────
-  config = lib.mkIf (cfg.enable && cfg.integrations.de == "Niri") {
+  config = lib.mkIf (cfg.enable && cfg.compositor == "Niri") {
     programs.niri.settings.binds = lib.mkMerge [
       {
         # Spawn ft-nixlaunch when the keybind is pressed.

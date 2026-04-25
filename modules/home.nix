@@ -26,6 +26,7 @@ self:
     # ── Options ──────────────────────────────────────────────────────────
     ./options/behavior.nix   # enable, searchEngine, browser, terminal, extraConfig
     ./options/colors.nix     # nixpaletteIntegration, stylixIntegration, colors.*, opacity
+    ./options/compositor.nix # compositor — single chooser for DE/compositor integration
     ./options/font.nix       # font.name, font.size
     ./options/window.nix     # window.*, iconSize, maxResults, padding, spacing
 

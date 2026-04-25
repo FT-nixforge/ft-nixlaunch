@@ -1,7 +1,7 @@
 # ft-nixlaunch — Hyprland DE integration
 #
 # Adds a keybinding and compositor layer rules when
-# `programs.ft-nixlaunch.integrations.de = "Hyprland"`.
+# `programs.ft-nixlaunch.compositor = "Hyprland"`.
 #
 # Keybind format: "MODIFIER, key"
 #   e.g.  "SUPER, space"
@@ -61,7 +61,7 @@ in
 
   };
 
-  config = lib.mkIf (cfg.enable && cfg.integrations.de == "Hyprland") {
+  config = lib.mkIf (cfg.enable && cfg.compositor == "Hyprland") {
     wayland.windowManager.hyprland.settings = {
       bind = [
         "${hCfg.keybind}, exec, ft-nixlaunch"

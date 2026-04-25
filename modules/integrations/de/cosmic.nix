@@ -107,7 +107,7 @@ in
   };
 
   # ── Config ────────────────────────────────────────────────────────────────
-  config = lib.mkIf (cfg.enable && cfg.integrations.de == "COSMIC") {
+  config = lib.mkIf (cfg.enable && cfg.compositor == "COSMIC") {
     # COSMIC custom shortcuts — RON format.
     # Path: ~/.config/cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom
     xdg.configFile."cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom".text =
