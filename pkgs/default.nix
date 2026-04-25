@@ -49,7 +49,7 @@ stdenvNoCC.mkDerivation {
     wrapProgram $out/bin/ft-nixlaunch \
       --prefix PATH : ${
         lib.makeBinPath [
-          rofi-wayland
+          rofi
           fd
           xdg-utils
           wl-clipboard
