@@ -22,8 +22,10 @@ jobs:
         uses: actions/cache@v5
         with:
           path: |
-            /nix/store
             ~/.cache/nix
+          # /nix/store is intentionally excluded — it is read-only inside the
+          # GitHub Actions runner and causes tar to fail with permission denied
+          # errors when actions/cache tries to restore into it.
           key: ${{ runner.os }}-nix-${{ hashFiles('flake.lock') }}
           restore-keys: |
             ${{ runner.os }}-nix-
@@ -37,7 +39,7 @@ jobs:
 
       - name: Verify homeModules export
         run: |
-          nix eval .#homeManagerModules.default --apply 'x: "ok"'
+          nix eval .#homeModules.default --apply 'x: "ok"'
 
       - name: Verify overlay export
         run: |

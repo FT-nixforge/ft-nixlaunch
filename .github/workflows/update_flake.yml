@@ -16,18 +16,19 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Let peter-evans/create-pull-request manage its own credentials.
+          # Keeping persist-credentials true (the default) causes a duplicate
+          # Authorization header when create-pull-request also configures auth,
+          # resulting in a 400 from GitHub.
+          persist-credentials: false
 
       - name: Install Nix
         uses: cachix/install-nix-action@v27
-        with:
-          github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Setup cache
         uses: actions/cache@v5
         with:
           path: |
-            /nix/store
             ~/.cache/nix
           key: ${{ runner.os }}-nix-${{ hashFiles('flake.lock') }}
           restore-keys: |
@@ -47,7 +48,7 @@ jobs:
       - name: Verify packages and modules still export correctly
         run: |
           nix eval .#packages.x86_64-linux.ft-nixlaunch --apply 'x: "ok"'
-          nix eval .#homeManagerModules.default --apply 'x: "ok"'
+          nix eval .#homeModules.default --apply 'x: "ok"'
           nix eval .#overlays.default --apply 'x: "ok"'
 
       - name: Create Pull Request
@@ -63,7 +64,7 @@ jobs:
             Updated inputs:
             - `nixpkgs`
 
-            Flake check passed — packages, homeManagerModules, and overlays all evaluate correctly.
+            Flake check passed — packages, homeModules, and overlays all evaluate correctly.
           labels: |
             dependencies
             automated
