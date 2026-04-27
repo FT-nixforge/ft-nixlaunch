@@ -1,24 +1,10 @@
 # ft-nixlaunch — theme generation and runtime config
-#
-# Responsible for:
-#   1. Resolving the active color palette (Stylix/ft-nixpalette > manual)
-#   2. Building the rasi theme string from module options
-#   3. Writing the generated theme + runtime config to XDG config dirs
-#   4. Exporting session variables that point the launcher at those files
-#
-# Color resolution order (highest → lowest priority):
-#   nixpaletteIntegration || stylixIntegration → config.lib.stylix.colors
-#   Manual colors.* values
 { config, lib, ... }:
 
 let
   cfg = config.programs.ft-nixlaunch;
 
-  # ── Stylix / ft-nixpalette color resolution ────────────────────────────────
-  # ft-nixpalette is NixOS-only; it configures Stylix system-wide and Stylix
-  # then propagates config.lib.stylix.colors into every Home Manager user.
-  # Each level of the attribute path must be guarded individually — the `?`
-  # operator only checks a single key, not a dotted path.
+  # ── Color resolution ──────────────────────────────────────────────────────
   stylixAvailable =
     (config ? stylix)
     && (config.stylix.enable or false)
@@ -28,11 +14,10 @@ let
 
   stylixColors = if stylixAvailable then config.lib.stylix.colors else null;
 
-  useIntegratedColors =
-    (cfg.nixpaletteIntegration || cfg.stylixIntegration) && stylixColors != null;
+  useStyleix = (cfg.theme == "stylix" || cfg.theme == "ft-nixpalette") && stylixColors != null;
 
   resolvedColors =
-    if useIntegratedColors then
+    if useStyleix then
       {
         background    = "#${stylixColors.base00}";
         backgroundAlt = "#${stylixColors.base01}";
@@ -54,13 +39,13 @@ let
       };
 
   # Convenience aliases
-  c   = resolvedColors;
-  a   = cfg.opacity;
-  f   = cfg.font;
-  w   = cfg.window;
-  r   = toString w.borderRadius;
-  ri  = toString (w.borderRadius - 8);   # inputbar radius
-  re  = toString (w.borderRadius - 10);  # element / button radius
+  c  = resolvedColors;
+  a  = cfg.opacity;
+  f  = cfg.font;
+  w  = cfg.window;
+  r  = toString w.borderRadius;
+  ri = toString (w.borderRadius - 8);
+  re = toString (w.borderRadius - 10);
 
   # ── Rasi theme ────────────────────────────────────────────────────────────
   generatedTheme = ''
@@ -228,25 +213,15 @@ in
 {
   config = lib.mkIf cfg.enable {
 
-    # ── Generated rasi theme ─────────────────────────────────────────────────
-    # The launcher reads ft_nixlaunch_THEME from the environment (set below)
-    # and falls back to the store copy of the default theme when unset.
     xdg.configFile."ft-nixlaunch/theme.rasi".text =
       generatedTheme + cfg.extraConfig;
 
-    # ── Runtime config file ───────────────────────────────────────────────────
-    # Sourced by the launcher script to pick up search engine, browser, and
-    # terminal settings without passing them as command-line arguments.
     xdg.configFile."ft-nixlaunch/config".text = ''
       ft_nixlaunch_SEARCH_ENGINE="${cfg.searchEngine}"
       ft_nixlaunch_BROWSER="${if cfg.browser != null then cfg.browser else ""}"
       ft_nixlaunch_TERMINAL="${if cfg.terminal != null then cfg.terminal else ""}"
     '';
 
-    # ── Session variables ─────────────────────────────────────────────────────
-    # Point the launcher at the XDG-managed files above.  The launcher falls
-    # back gracefully when these are unset (using the store defaults), but
-    # setting them here ensures the Nix-generated theme is always used.
     home.sessionVariables = {
       ft_nixlaunch_THEME  = "${config.xdg.configHome}/ft-nixlaunch/theme.rasi";
       ft_nixlaunch_CONFIG = "${config.xdg.configHome}/ft-nixlaunch/config";
